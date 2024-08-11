@@ -137,7 +137,7 @@ class DbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         cartModel
     }
 
-    fun deleteProductByName(id: Int): Boolean {
+    fun deleteProductById(id: Int): Boolean {
 
         val db = this.writableDatabase
         val whereClause = "$ID =?"
@@ -155,7 +155,6 @@ class DbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     fun updateProductQuantity(id: Int, newQuantity: Int): Boolean {
 
         val db = this.writableDatabase
-
         val values = ContentValues().apply {
             put(QUANTITY, newQuantity)
         }
@@ -225,5 +224,49 @@ class DbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         }
         val result = db.update(DATABASE_TABLE, contentValues,"$ID = ?", arrayOf(product.id.toString().trim()))
         return result > 0
+    }
+    // New method to remove an item from the cart
+    fun removeItemFromCart(id: Int): Boolean {
+        val db = this.writableDatabase
+        return try {
+            val whereClause = "$ID = ?"
+            val whereArgs = arrayOf(id.toString())
+            val rowsDeleted = db.delete(DATABASE_TABLE, whereClause, whereArgs)
+            rowsDeleted > 0
+        } catch (e: Exception) {
+            Log.e("DbHelper", "Error removing item from cart: ${e.message}")
+            false
+        }
+    }
+    // New method to get all items from the cart
+    fun getAllCartItems(): List<DataModel> {
+        val cartItems = mutableListOf<DataModel>()
+        val db = this.readableDatabase
+
+        db.rawQuery("SELECT * FROM $DATABASE_TABLE", null).use { cursor ->
+            if (cursor.moveToFirst()) {
+                do {
+                    val item = DataModel(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(IMAGE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(PRICE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(QUANTITY))
+                    )
+                    cartItems.add(item)
+                } while (cursor.moveToNext())
+            }
+        }
+
+        db.close()
+        return cartItems
+    }
+
+    // New method to clear the cart
+    fun clearCart() {
+        val db = this.writableDatabase
+        db.execSQL("DELETE FROM $DATABASE_TABLE")
+        db.close()
     }
 }

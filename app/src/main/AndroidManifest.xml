@@ -19,11 +19,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.finalpro"
+        android:theme="@style/Theme.KinCart"
         tools:targetApi="31">
-        <activity
-            android:name=".Order.OrderActivity"
-            android:exported="false" />
         <activity
             android:name=".payment.PaymentActivity"
             android:exported="false" />

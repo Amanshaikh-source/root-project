@@ -2,7 +2,7 @@ package com.example.finalpro
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx. appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.example.finalpro.ApiService.RetrofitClient
 import com.example.finalpro.Login.PhoneActivity
 import com.example.finalpro.adaptors.RecyclerFourAdaptor
 import com.example.finalpro.adaptors.RecyclerOneAdaptor
@@ -87,9 +88,7 @@ class MainActivity : AppCompatActivity() ,NavigationView.OnNavigationItemSelecte
 
         val indicator = findViewById<CircleIndicator>(R.id.indicator)
         indicator.setViewPager(viewPager)
-
       }
-
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -105,7 +104,7 @@ class MainActivity : AppCompatActivity() ,NavigationView.OnNavigationItemSelecte
 //                Toast.makeText(this,"Home Clicked",Toast.LENGTH_LONG).show()
             }
             R.id.cartMenu -> {
-                startActivity(Intent(this, Cart::class.java))
+                startActivity(Intent(this,Cart::class.java))
             }
             R.id.myNotification -> {
                 startActivity(Intent(this, MyNotification::class.java))
@@ -205,7 +204,7 @@ class MainActivity : AppCompatActivity() ,NavigationView.OnNavigationItemSelecte
 
         val rv_three = findViewById<RecyclerView>(R.id.rv_three)
        // val rvthree = ArrayList<DataModel>()
-        productList.add(DataModel(0,"Apple Products", "https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg?q=70",149900 , "APPLE iPhone 15 (Blue, 128 GB)"))
+        productList.add(DataModel(0,"Apple Products","https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg?q=70",149900 , "APPLE iPhone 15 (Blue, 128 GB)"))
         productList.add(DataModel(0,"Apple iPhone 15 Pro Max","https://m.media-amazon.com/images/I/81Os1SDWpcL._SL1500_.jpg", 151700,"Apple iPhone 15 Pro Max (256 GB) - Black Titanium"))
         productList.add(DataModel(0,"Samsung Galaxy Z Flip5 5G","https://m.media-amazon.com/images/I/71rMdsTWkmL._SL1500_.jpg",99999, "Samsung Galaxy Z Flip5 5G AI Smartphone (Cream, 8GB RAM, 256GB Storage)"))
         productList.add(DataModel(0,"Samsung Galaxy Z Fold4 5G","https://m.media-amazon.com/images/I/71Vd1+ZnY-L._SL1500_.jpg",112999,"Samsung Galaxy Z Fold4 5G (Graygreen, 12GB RAM, 256GB Storage) "))
@@ -214,9 +213,9 @@ class MainActivity : AppCompatActivity() ,NavigationView.OnNavigationItemSelecte
         productList.add(DataModel(0,"OnePlus Nord Buds 2r True Wireless","https://m.media-amazon.com/images/I/51oMWaW7tKL._SL1500_.jpg",1799, "OnePlus Nord Buds 2r True Wireless in Ear Earbuds with Mic, 12.4mm Drivers, Playback:Upto 38hr case,4-Mic Design, IP55 Rating [Deep Grey]"))
         productList.add(DataModel(0,"Noise Buds N1 in-Ear Truly Wireless Earbuds","https://m.media-amazon.com/images/I/61WAxDWqh3L._SL1500_.jpg", 1299,"Noise Buds N1 in-Ear Truly Wireless Earbuds with Chrome Finish, 40H of Playtime, Quad Mic with ENC, Ultra Low Latency(up to 40 ms), Instacharge(10 min=120 min), BT v5.3(Carbon Black)"))
         productList.add(DataModel(0,"boAt Airdopes 141 Bluetooth","https://m.media-amazon.com/images/I/41nzykE3sIL._SX300_SY300_QL70_FMwebp_.jpg",999,"boAt Airdopes 141 Bluetooth TWS Earbuds with 42H Playtime,Low Latency Mode for Gaming, ENx Tech, IWP, IPX4 Water Resistance, Smooth Touch Controls(Bold Black), in Ear"))
-        productList.add(DataModel(0, "boAt Airdopes Atom 81", "https://m.media-amazon.com/images/I/61yyQD1KLOL._SL1500_.jpg",799, "boAt Airdopes Atom 81 in Ear TWS Earbuds with Upto 50H Playtime, Quad Mics ENx Tech, 13MM Drivers,Super Low Latency(50ms), ASAP Charge, BT v5.3(Opal Black)"))
-        productList.add(DataModel(0,"OnePlus 12", "https://m.media-amazon.com/images/I/61BAuSC0UnL._SL1464_.jpg",69998,"OnePlus 12 (Flowy Emerald, 16GB RAM, 512GB Storage)"))
-        productList.add(DataModel(0,"Nike", "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/fd4a337e-51cf-46d1-9ef4-e2d41463c12d/air-force-1-07-fresh-shoes-bBRnbq.png",11295,"Nike Air Force 1 '07 Fresh\n" +
+        productList.add(DataModel(0, "boAt Airdopes Atom 81","https://m.media-amazon.com/images/I/61yyQD1KLOL._SL1500_.jpg",799, "boAt Airdopes Atom 81 in Ear TWS Earbuds with Upto 50H Playtime, Quad Mics ENx Tech, 13MM Drivers,Super Low Latency(50ms), ASAP Charge, BT v5.3(Opal Black)"))
+        productList.add(DataModel(0,"OnePlus 12","https://m.media-amazon.com/images/I/61BAuSC0UnL._SL1464_.jpg",69998,"OnePlus 12 (Flowy Emerald, 16GB RAM, 512GB Storage)"))
+        productList.add(DataModel(0,"Nike","https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/fd4a337e-51cf-46d1-9ef4-e2d41463c12d/air-force-1-07-fresh-shoes-bBRnbq.png",11295,"Nike Air Force 1 '07 Fresh\n" +
                 "Men's Shoes"))
         productList.add(DataModel(0,"Nike","https://static.nike.com/a/images/t_prod_ss/w_640,c_limit,f_auto/01a2382d-fa11-4fe0-802a-b4f1758819f9/air-force-1-x-tiffany-co-1837-dz1382-001-release-date.jpg",33595,"Air Force 1 x Tiffany & Co."))
         productList.add(DataModel(0,"Cricket Bat","https://m.media-amazon.com/images/I/51NwRpWIHXL._SL1355_.jpg",100,"VINOX Wood Precision Strike Willow Cricket Bat: Elevate Your Game To New Heights (3)"))

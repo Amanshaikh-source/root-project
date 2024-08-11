@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FinalPro</string>
+    <string name="app_name">Kin Cart</string>
     <string name="search">Search</string>
     <string name="search_hint">Search products…</string>
     <string name="product_name">Product Name</string>
@@ -21,6 +21,7 @@
     <string name="product_image_desc">Image of the product showing its details</string>
     <string name="Plc_order">Place Order</string>
     <string name="total_amount">Total Amount</string>
+    <string name="your_cart_is_empty">Your cart is empty</string>
 
 </resources>
 
