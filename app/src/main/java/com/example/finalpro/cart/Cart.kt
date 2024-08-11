@@ -117,7 +117,7 @@ class Cart : AppCompatActivity() {
             try {
                 cartItems.clear()
                 cartItems.addAll(dbHelper.getAllProduct())
-                cartAdaptor.notifyDataSetChanged()
+                cartAdaptor.notifyDataSetChanged() // Notify adapter of data changes
                 updateTotalPrice()
                 updateEmptyCartMessage()
             } catch (e: Exception) {

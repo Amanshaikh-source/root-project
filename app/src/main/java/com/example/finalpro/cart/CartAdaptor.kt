@@ -1,6 +1,8 @@
 package com.example.finalpro.cart
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +20,12 @@ import com.squareup.picasso.Picasso
 
 class CartAdaptor(
     private val context: Context,
-    private val cartItems: MutableList<DataModel>, // Use MutableList to allow modifications
+    private val cartItems: MutableList<DataModel>,
     private val onDeleteClickListener: (Int) -> Unit,
     private val onQuantityChangeListener: (Int, Int) -> Unit
 ) : RecyclerView.Adapter<CartAdaptor.CartViewHolder>() {
 
-    private val maxQuantity = 5 // Maximum quantity limit for items
+    private val maxQuantity = 5 // You can adjust this as needed
 
     class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.cartName)
@@ -44,7 +46,11 @@ class CartAdaptor(
         return cartItems.size
     }
 
-    override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CartViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        if (position >= cartItems.size) {
+            Log.e("CartAdaptor", "Index out of bounds: $position")
+            return
+        }
         val currentItem = cartItems[position]
 
         holder.nameTextView.text = currentItem.Name
@@ -59,11 +65,14 @@ class CartAdaptor(
             .into(holder.imageView)
 
         holder.btnRemove.setOnClickListener {
-            onDeleteClickListener.invoke(position)
+            val pos = holder.adapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                onDeleteClickListener.invoke(pos)
+            }
         }
 
         // Set up the spinner with quantities
-        val quantityList = (1..maxQuantity).map { "Qty : $it" } // List of quantities
+        val quantityList = (1..maxQuantity).map { "Qty : $it" }
         val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, quantityList)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         holder.quantitySpinner.adapter = adapter
@@ -72,37 +81,39 @@ class CartAdaptor(
         val initialSelection = (currentItem.quantity - 1).coerceIn(0, maxQuantity - 1)
         holder.quantitySpinner.setSelection(initialSelection)
 
-        // Handle spinner item selection changes
-        holder.quantitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, pos: Int, id: Long) {
-                val newQuantity = pos + 1
-                if (newQuantity != currentItem.quantity) {
-                    if (newQuantity <= maxQuantity) {
-                        // Update the item quantity in the data model
-                        currentItem.quantity = newQuantity
+        holder.quantitySpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    pos: Int,
+                    id: Long
+                ) {
+                    val newQuantity = pos + 1
+                    if (position >= cartItems.size) {
+                        Log.e(
+                            "CartAdaptor",
+                            "Index out of bounds during spinner selection: $position"
+                        )
+                        return
+                    }
 
-                        // Notify the adapter that the data has changed for this item
-                        notifyItemChanged(position)
-
-                        // Update the cartQuantity TextView
+                    val item = cartItems[position]
+                    if (newQuantity != item.quantity) {
+                        onQuantityChangeListener.invoke(holder.adapterPosition, newQuantity)
                         holder.cartQuantity.text = newQuantity.toString()
 
-                        // Calculate and update the new price
-                        val newPrice = currentItem.Price * newQuantity
+                        val newPrice = item.Price * newQuantity
                         holder.priceTextView.text = newPrice.toString()
 
-                        // Notify the listener to handle quantity change
-                        onQuantityChangeListener.invoke(currentItem.id, newQuantity)
-                    } else {
-                        Toast.makeText(context, "Max quantity is $maxQuantity", Toast.LENGTH_SHORT).show()
+                        notifyItemChanged(holder.adapterPosition)
                     }
                 }
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // No action needed
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Handle case when nothing is selected
+
+                }
             }
-        }
     }
 }
-
