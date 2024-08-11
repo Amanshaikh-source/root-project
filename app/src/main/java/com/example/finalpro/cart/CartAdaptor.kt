@@ -1,8 +1,6 @@
 package com.example.finalpro.cart
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +18,8 @@ import com.squareup.picasso.Picasso
 
 class CartAdaptor(
     private val context: Context,
-    private val cartItems: List<DataModel>,
-    private val onDeleteClickListener: (position: Int) -> Unit,
+    private val cartItems: MutableList<DataModel>, // Use MutableList to allow modifications
+    private val onDeleteClickListener: (Int) -> Unit,
     private val onQuantityChangeListener: (Int, Int) -> Unit
 ) : RecyclerView.Adapter<CartAdaptor.CartViewHolder>() {
 
@@ -80,7 +78,11 @@ class CartAdaptor(
                 val newQuantity = pos + 1
                 if (newQuantity != currentItem.quantity) {
                     if (newQuantity <= maxQuantity) {
-                        onQuantityChangeListener.invoke(holder.adapterPosition, newQuantity)
+                        // Update the item quantity in the data model
+                        currentItem.quantity = newQuantity
+
+                        // Notify the adapter that the data has changed for this item
+                        notifyItemChanged(position)
 
                         // Update the cartQuantity TextView
                         holder.cartQuantity.text = newQuantity.toString()
@@ -89,18 +91,18 @@ class CartAdaptor(
                         val newPrice = currentItem.Price * newQuantity
                         holder.priceTextView.text = newPrice.toString()
 
-                        // Notify the adapter that the data has changed for this item
-                        notifyItemChanged(holder.adapterPosition)
+                        // Notify the listener to handle quantity change
+                        onQuantityChangeListener.invoke(currentItem.id, newQuantity)
                     } else {
-                        Toast.makeText(context, "Cannot select more than $maxQuantity.", Toast.LENGTH_SHORT).show()
-                        holder.quantitySpinner.setSelection(currentItem.quantity - 1) // Reset to previous value
+                        Toast.makeText(context, "Max quantity is $maxQuantity", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Log.d(TAG, "No item selected in the spinner")
-                holder.quantitySpinner.setSelection(currentItem.quantity - 1) // Reset to previous valid value
+                // No action needed
             }
         }
     }
 }
+

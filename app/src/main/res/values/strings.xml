@@ -21,6 +21,7 @@
     <string name="product_image_desc">Image of the product showing its details</string>
     <string name="Plc_order">Place Order</string>
     <string name="total_amount">Total Amount</string>
+    <string name="your_cart_is_empty">Your cart is empty</string>
 
 </resources>
 
