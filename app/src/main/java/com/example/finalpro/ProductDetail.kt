@@ -1,5 +1,6 @@
 package com.example.finalpro
 
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +14,6 @@ import com.example.finalpro.dbHelper.DbHelper
 import androidx.lifecycle.lifecycleScope
 import com.example.finalpro.Utils.IdUtils
 import kotlinx.coroutines.launch
-
-
 import com.squareup.picasso.Picasso
 
 class ProductDetail : AppCompatActivity() {
@@ -30,15 +29,12 @@ class ProductDetail : AppCompatActivity() {
         val priceDetail = findViewById<TextView>(id.TVproprice)
         val descDetail = findViewById<TextView>(id.Tvprodesc)
 
-//      val addToCart = findViewById<Button>(R.id.addToCart)
-
         bundle = intent.extras ?: return
-        val nameEx : String? = bundle.getString("Title")
-        val priceEx : Int  = bundle.getInt("Price")
-        val imageEx : String? = bundle.getString("Image")
-        val descEx : String?= bundle.getString("Desc")
+        val nameEx  : String = bundle.getString("Title") ?: "Unknown"
+        val priceEx : Int    = bundle.getInt("Price",0)
+        val imageEx : String = bundle.getString("Image") ?: ""
+        val descEx  : String = bundle.getString("Desc") ?: ""
 
-      //  imgDetail.setImageResource(imageEx)
         Picasso.get()
             .load(imageEx)
             .placeholder(drawable.example)
@@ -48,7 +44,6 @@ class ProductDetail : AppCompatActivity() {
         nameDetail.text = nameEx
         priceDetail.text = priceEx.toString()
         descDetail.text = descEx
-
     }
     fun addToCart(view: View) {
         val dbHelper = DbHelper(this)
